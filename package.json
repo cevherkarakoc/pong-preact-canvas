@@ -1,0 +1,23 @@
+{
+  "name": "pong-preact-canvas",
+  "version": "1.0.0",
+  "description": "A pong clone made with Preact and HTML5 canvas",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html --experimental-scope-hoisting --no-source-maps --detailed-report"
+  },
+  "author": "cevherkarakoc",
+  "license": "MIT",
+  "browserslist": [
+    "last 1 version",
+    "not IE 11"
+  ],
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "dependencies": {
+    "eylem": "^0.1.1",
+    "preact": "^10.5.7"
+  }
+}
