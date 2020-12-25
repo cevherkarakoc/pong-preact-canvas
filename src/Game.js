@@ -11,7 +11,6 @@ const SPEED_FACTOR = 12;
 const BAR_WIDTH = 25;
 const BAR_HEIGHT = BAR_WIDTH * 4;
 const TOP_BOTTOM_PADDING = 0;
-const BAR_PADDING = 8;
 const BALL_SIZE = 16;
 const BALL_SPEED = 12;
 
@@ -24,20 +23,8 @@ const randomBallStart = () => {
         y: HEIGHT / 2,
         dirX: direction.x,
         dirY: direction.y,
-        lastPong: 0
     }
 }
-
-const WALL_TOP = {
-    START: { x: -100, y: -24 },
-    END: { x: WIDTH + 100, y: 24 }
-}
-
-const WALL_BOTTOM = {
-    START: { x: -100, y: HEIGHT - 24 },
-    END: { x: WIDTH + 100, y: HEIGHT + 24 }
-}
-
 
 export const Game = () => {
     const { frame, time } = useContext(AnimationFrameContext)
@@ -58,49 +45,29 @@ export const Game = () => {
         });
 
         setBallPosition(({ x, y, lastPong, dirX, dirY }) => {
-            const isPongDeltaPass = (time - lastPong > 0.075);
             const nextPos = {
                 x: x + dirX * BALL_SPEED,
                 y: y + dirY * BALL_SPEED,
             };
-
-            const ballNextB = {
-                x: nextPos.x + BALL_SIZE,
-                y: nextPos.y + BALL_SIZE
-            }
 
             if (nextPos.x < 0 || nextPos.x > WIDTH + BALL_SIZE) {
                 setScore(0);
                 return randomBallStart();
             }
 
-            const isIntersectLeft = isPongDeltaPass && isIntersect(
-                { x: BAR_WIDTH * 2 - BALL_SIZE / 3, y: leftBarY - BAR_PADDING },
-                { x: BAR_WIDTH * 2, y: leftBarY + BAR_HEIGHT + BAR_PADDING },
+            const isIntersectLeft = dirX <= 0 && isIntersect(
                 nextPos,
-                ballNextB
+                { x: BAR_WIDTH, y: leftBarY - BALL_SIZE, width: BAR_WIDTH, height: BAR_HEIGHT + BALL_SIZE },
             )
 
-            const isIntersectRight = !isIntersectLeft && isPongDeltaPass && isIntersect(
-                { x: WIDTH - (BAR_WIDTH * 2 - BALL_SIZE / 3), y: rightBarY - BAR_PADDING },
-                { x: WIDTH - (BAR_WIDTH * 1.5), y: rightBarY + BAR_HEIGHT + BAR_PADDING },
+            const isIntersectRight = !isIntersectLeft && dirX >= 0 && isIntersect(
                 nextPos,
-                ballNextB
+                { x: WIDTH - (BAR_WIDTH * 2) - BALL_SIZE, y: rightBarY - BALL_SIZE, width: BAR_WIDTH, height: BAR_HEIGHT + BALL_SIZE },
             )
 
-            const isIntersectTop = isPongDeltaPass && isIntersect(
-                WALL_TOP.START,
-                WALL_TOP.END,
-                nextPos,
-                ballNextB
-            );
+            const isIntersectTop = nextPos.y < 0 && dirY <= 0;
 
-            const isIntersectBottom = isPongDeltaPass && isIntersect(
-                WALL_BOTTOM.START,
-                WALL_BOTTOM.END,
-                nextPos,
-                ballNextB
-            );
+            const isIntersectBottom = nextPos.y > HEIGHT - BALL_SIZE && dirY >= 0;
 
             if (isIntersectLeft || isIntersectRight) {
                 setScore(_score => _score + 1)
@@ -117,7 +84,6 @@ export const Game = () => {
                 ...nextPos,
                 dirX: newDir.x,
                 dirY: newDir.y,
-                lastPong: (dirX !== newDir.x || dirY !== newDir.y) ? time : lastPong
             };
 
 
