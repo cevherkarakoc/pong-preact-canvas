@@ -9,7 +9,7 @@ export const FilledText = ({ x = 0, y = 0, fontSize = 16, children }) => {
     useLayoutEffect(() => {
         ctx.font = `${fontSize}px monospace`;
         ctx.fillText(children, x, y);
-    }, [ctx, x, y, fontSize, children, frame])
+    }, [frame])
 
     return (
         <Fragment>

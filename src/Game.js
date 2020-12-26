@@ -1,11 +1,12 @@
 import { h, Fragment } from 'preact';
 import { useContext, useLayoutEffect, useState } from 'preact/hooks';
+import inputs from './inputs';
 import { FilledText } from './CanvasComponents/FilledText';
 import { Rect } from './CanvasComponents/Rect';
 import { HEIGHT, WIDTH } from './constants';
-import { ActionContext, AnimationFrameContext } from './contexts';
+import { AnimationFrameContext } from './contexts';
 import { Midfield } from './Midfield';
-import { isIntersect, rotate } from './utils';
+import { isIntersect, rotate , toAngle} from './utils';
 
 const SPEED_FACTOR = 12;
 const BAR_WIDTH = 25;
@@ -14,7 +15,16 @@ const TOP_BOTTOM_PADDING = 0;
 const BALL_SIZE = 16;
 const BALL_SPEED = 12;
 
-const randomAngle = () => Math.PI * (Math.floor(Math.random() * 5) * 0.02 + 0.46);
+const randomAngle = (dir) => {
+    if(dir) {
+        if(Math.abs(Math.tan(toAngle(dir))) < 0.5) {
+            return Math.PI * 0.25 + (Math.random() - 0.5) * 0.1;
+        }
+        return Math.PI * (Math.floor(Math.random() * 5) * 0.02 + 0.46);
+    }
+
+    return Math.PI;
+};
 
 const randomBallStart = () => {
     const direction = rotate({ x: Math.random() > 0.5 ? 1 : -1, y: 0 }, randomAngle() * Math.random() > 0.5 ? 1 : -1)
@@ -27,8 +37,7 @@ const randomBallStart = () => {
 }
 
 export const Game = () => {
-    const { frame, time } = useContext(AnimationFrameContext)
-    const { actions } = useContext(ActionContext);
+    const { frame } = useContext(AnimationFrameContext);
     const [leftBarY, setLeftBarY] = useState(100);
     const [rightBarY, setRightBarY] = useState(HEIGHT - 100);
     const [score, setScore] = useState(0);
@@ -37,11 +46,11 @@ export const Game = () => {
 
     useLayoutEffect(() => {
         setLeftBarY((_leftBarY) => {
-            return Math.max(Math.min(_leftBarY + (actions.vertical * SPEED_FACTOR), HEIGHT - (BAR_HEIGHT + TOP_BOTTOM_PADDING)), TOP_BOTTOM_PADDING);
+            return Math.max(Math.min(_leftBarY + (inputs.actions.vertical * SPEED_FACTOR), HEIGHT - (BAR_HEIGHT + TOP_BOTTOM_PADDING)), TOP_BOTTOM_PADDING);
         });
 
         setRightBarY((_rightBarY) => {
-            return Math.max(Math.min(_rightBarY + (-actions.vertical * SPEED_FACTOR), HEIGHT - (BAR_HEIGHT + TOP_BOTTOM_PADDING)), TOP_BOTTOM_PADDING);
+            return Math.max(Math.min(_rightBarY + (-inputs.actions.vertical * SPEED_FACTOR), HEIGHT - (BAR_HEIGHT + TOP_BOTTOM_PADDING)), TOP_BOTTOM_PADDING);
         });
 
         setBallPosition(({ x, y, lastPong, dirX, dirY }) => {
@@ -75,8 +84,8 @@ export const Game = () => {
 
             const dirFix = (isIntersectLeft || isIntersectRight) ? -1 : 1;
             const angleFix = (dirX * dirY) > 0 ? -1 : 1;
-            // 
-            const angle = randomAngle() * dirFix * angleFix;
+            
+            const angle = randomAngle({x: dirX, y: dirY}) * dirFix * angleFix;
 
             const newDir = (isIntersectLeft || isIntersectRight || isIntersectTop || isIntersectBottom) ? rotate({ x: dirX, y: dirY }, angle) : { x: dirX, y: dirY }
 
@@ -88,7 +97,7 @@ export const Game = () => {
 
 
         })
-    }, [frame, time, actions]);
+    }, [frame]);
 
     return <Fragment>
         <Midfield />

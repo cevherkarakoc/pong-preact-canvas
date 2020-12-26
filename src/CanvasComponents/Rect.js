@@ -10,7 +10,7 @@ export const Rect = ({ x = 0, y = 0, width = 10, height = 10 }) => {
         ctx.beginPath();
         ctx.rect(x, y, width, height);
         ctx.fill();
-    }, [ctx, x, y, width, height, frame])
+    }, [frame])
 
     return (
         <Fragment>

@@ -7,6 +7,6 @@ export const isIntersect = (point, rect) => {
 
 const fromAngle = angle => ({ x: Math.cos(angle), y: Math.sin(angle) });
 
-const toAngle = vec => Math.atan2(vec.y, vec.x);
+export const toAngle = vec => Math.atan2(vec.y, vec.x);
 
 export const rotate = (vec, angle) => fromAngle(toAngle(vec) + angle);
