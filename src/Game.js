@@ -101,8 +101,8 @@ export const Game = () => {
 
     return <Fragment>
         <Midfield />
-        <FilledText x={WIDTH / 2 + (64)} y={128} fontSize={128}>{score}</FilledText>
-        <FilledText x={WIDTH / 2 - 320} y={54} fontSize={14}>Use W/S keys to control the paddles</FilledText>
+        <FilledText x={WIDTH / 2 + 64} y={128} fontSize={128}>{score}</FilledText>
+        <FilledText x={WIDTH / 2 - 350} y={54} fontSize={14}>Use W/S keys to control the paddles</FilledText>
         <Rect x={ballPosition.x} y={ballPosition.y} width={BALL_SIZE} height={BALL_SIZE} />
         <Rect x={BAR_WIDTH} y={leftBarY} width={BAR_WIDTH} height={BAR_HEIGHT} />
         <Rect x={WIDTH - (BAR_WIDTH * 2)} y={rightBarY} width={BAR_WIDTH} height={BAR_HEIGHT} />
