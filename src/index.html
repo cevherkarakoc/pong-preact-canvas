@@ -6,6 +6,7 @@
     <title>Pong Solo</title>
     <meta name="description" content="A Game">
     <meta name="author" content="cevherkarakoc">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         html {
@@ -14,29 +15,20 @@
         }
 
         body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: black;
-        }
-
-        .canvas-container {
-            width: 0;
-            height: 100vh;
-            padding-left: calc(100vh * 16/9);
-            position: relative;
+            background-color: #fff;
         }
 
         .canvas {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+            width: 128px;
+            height: 72px;
         }
     </style>
 </head>

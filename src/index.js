@@ -21,12 +21,10 @@ const CanvasClear = () => {
 }
 
 const App = () => {
-    return <div className="canvas-container">
-        <Canvas width={WIDTH} height={HEIGHT} className="canvas">
-                <CanvasClear />
-                <Game />
-        </Canvas>
-    </div>;
+    return <Canvas width={WIDTH} height={HEIGHT} className="canvas">
+        <CanvasClear />
+        <Game />
+    </Canvas>
 }
 
 render(<App />, document.body);
