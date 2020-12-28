@@ -6,7 +6,7 @@ import { Rect } from './CanvasComponents/Rect';
 import { HEIGHT, WIDTH } from './constants';
 import { AnimationFrameContext } from './contexts';
 import { Midfield } from './Midfield';
-import { isIntersect, rotate , toAngle} from './utils';
+import { isIntersect, rotate, toAngle } from './utils';
 
 const SPEED_FACTOR = 12;
 const BAR_WIDTH = 25;
@@ -16,8 +16,8 @@ const BALL_SIZE = 16;
 const BALL_SPEED = 12;
 
 const randomAngle = (dir) => {
-    if(dir) {
-        if(Math.abs(Math.tan(toAngle(dir))) < 0.5) {
+    if (dir) {
+        if (Math.abs(Math.tan(toAngle(dir))) < 0.5) {
             return Math.PI * 0.25 + (Math.random() - 0.5) * 0.1;
         }
         return Math.PI * (Math.floor(Math.random() * 5) * 0.02 + 0.46);
@@ -33,11 +33,12 @@ const randomBallStart = () => {
         y: HEIGHT / 2,
         dirX: direction.x,
         dirY: direction.y,
+        lastPong: 0
     }
 }
 
 export const Game = () => {
-    const { frame } = useContext(AnimationFrameContext);
+    const { frame, time } = useContext(AnimationFrameContext);
     const [leftBarY, setLeftBarY] = useState(100);
     const [rightBarY, setRightBarY] = useState(HEIGHT - 100);
     const [score, setScore] = useState(0);
@@ -78,14 +79,14 @@ export const Game = () => {
 
             const isIntersectBottom = nextPos.y > HEIGHT - BALL_SIZE && dirY >= 0;
 
-            if (isIntersectLeft || isIntersectRight) {
+            if ((isIntersectLeft || isIntersectRight) && (time - lastPong > 0.1)) {
                 setScore(_score => _score + 1)
             }
 
             const dirFix = (isIntersectLeft || isIntersectRight) ? -1 : 1;
             const angleFix = (dirX * dirY) > 0 ? -1 : 1;
-            
-            const angle = randomAngle({x: dirX, y: dirY}) * dirFix * angleFix;
+
+            const angle = randomAngle({ x: dirX, y: dirY }) * dirFix * angleFix;
 
             const newDir = (isIntersectLeft || isIntersectRight || isIntersectTop || isIntersectBottom) ? rotate({ x: dirX, y: dirY }, angle) : { x: dirX, y: dirY }
 
@@ -93,6 +94,7 @@ export const Game = () => {
                 ...nextPos,
                 dirX: newDir.x,
                 dirY: newDir.y,
+                lastPong: (isIntersectLeft || isIntersectRight) ? time : lastPong
             };
 
 
